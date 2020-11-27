@@ -21,19 +21,29 @@ public class BrokenLamportBakeryTest {
     }
 
     @Test
-    public void testCriticalSection() {
-        initialize(2, 100);
-        try(AllInterleavings allInterleavings = new AllInterleavings("critical.section.test")) {
-            while (allInterleavings.hasNext()) {
-                List<Thread> threads = createThreads();
-                threads.forEach(Thread::start);
-                for (Thread thread : threads)
-                    thread.join();
-                Assert.assertFalse(criticalSection.isBreached());
-            }
+    public void test() throws InterruptedException {
+        initialize(3, 100);
+        List<Thread> threads = createThreads();
+        threads.forEach(Thread::start);
+        for (Thread thread : threads)
+            thread.join();
+        Assert.assertFalse(criticalSection.isBreached());
+    }
+
+    @Test
+    public void testWithVmlens() {
+        try(AllInterleavings allInterleavings = buildAllInterleavings()) {
+            while (allInterleavings.hasNext())
+                test();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    private AllInterleavings buildAllInterleavings() {
+        return AllInterleavings.builder("critical.section.test")
+                .maximumRuns(10000)
+                .build();
     }
 
     private List<Thread> createThreads() {
