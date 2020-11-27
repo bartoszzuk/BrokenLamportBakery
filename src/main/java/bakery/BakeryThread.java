@@ -2,7 +2,6 @@ package bakery;
 
 import utils.CriticalSection;
 
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 
 public class BakeryThread implements Runnable {
@@ -50,8 +49,8 @@ public class BakeryThread implements Runnable {
 
     private boolean otherHasPriority(int otherId) {
         return ticketMachine.get(otherId) != 0 &&
-                (ticketMachine.get(otherId) < ticketMachine.get(id) ||
-                (ticketMachine.get(otherId) == ticketMachine.get(id) && otherId > id));
+                (ticketMachine.get(otherId) < ticketMachine.get(id) /* ||
+                (ticketMachine.get(otherId) == ticketMachine.get(id) && otherId < id) */ );
     }
 
     public void unlock() {

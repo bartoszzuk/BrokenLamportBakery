@@ -1,5 +1,7 @@
 package utils;
 
+import com.vmlens.annotation.DoNotTrace;
+
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
@@ -16,6 +18,7 @@ public class SimpleCriticalSection implements CriticalSection {
         this.delay = delay;
     }
 
+//    @DoNotTrace
     @Override
     public void enter() {
         try {
