@@ -15,4 +15,4 @@ $ cd BrokenLamportBakery
 $ mvn clean test
 ```
 
-Chceck folder *target/interleave* for any interleavings which resulted in the failure of the tests.
+Check folder *target/interleave* for any interleavings which resulted in the failure of the tests.
