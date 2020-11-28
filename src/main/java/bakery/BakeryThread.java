@@ -6,10 +6,10 @@ import java.util.concurrent.atomic.AtomicIntegerArray;
 
 public class BakeryThread implements Runnable {
 
-    private int id;
-    private AtomicIntegerArray ticketMachine;
-    private AtomicIntegerArray enteringArray;
-    private CriticalSection criticalSection;
+    private final int id;
+    private final AtomicIntegerArray ticketMachine;
+    private final AtomicIntegerArray enteringArray;
+    private final CriticalSection criticalSection;
 
     public BakeryThread(int id, SharedVariables sharedVariables, CriticalSection criticalSection) {
         this.id = id;
@@ -49,8 +49,8 @@ public class BakeryThread implements Runnable {
 
     private boolean otherHasPriority(int otherId) {
         return ticketMachine.get(otherId) != 0 &&
-                (ticketMachine.get(otherId) < ticketMachine.get(id) /* ||
-                (ticketMachine.get(otherId) == ticketMachine.get(id) && otherId < id) */ );
+                (ticketMachine.get(otherId) < ticketMachine.get(id) ||
+                (ticketMachine.get(otherId) == ticketMachine.get(id) && otherId < id));
     }
 
     public void unlock() {

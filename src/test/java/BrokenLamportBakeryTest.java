@@ -1,16 +1,21 @@
 import bakery.BakeryThread;
 import bakery.SharedVariables;
 import com.vmlens.api.AllInterleavings;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 import utils.CriticalSection;
 import utils.SimpleCriticalSection;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicIntegerArray;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class BrokenLamportBakeryTest {
+
+    private static final Logger logger = LogManager.getLogger(BrokenLamportBakeryTest.class);
 
     private SharedVariables sharedVariables;
     private CriticalSection criticalSection;
@@ -27,7 +32,16 @@ public class BrokenLamportBakeryTest {
         threads.forEach(Thread::start);
         for (Thread thread : threads)
             thread.join();
+        logger.info(getTicketMachineString());
         Assert.assertFalse(criticalSection.isBreached());
+    }
+
+    private String getTicketMachineString() {
+        AtomicIntegerArray ticketMachine = sharedVariables.getTicketMachine();
+        return IntStream.range(0, ticketMachine.length())
+                .mapToObj(ticketMachine::get)
+                .map(String::valueOf)
+                .collect(Collectors.joining(", "));
     }
 
     @Test
