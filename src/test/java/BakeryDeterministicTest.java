@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class BrokenLamportBakeryTest {
+public class BakeryDeterministicTest {
 
-    private static final Logger logger = LogManager.getLogger(BrokenLamportBakeryTest.class);
+    private static final Logger logger = LogManager.getLogger(BakeryDeterministicTest.class);
 
     private SharedVariables sharedVariables;
     private CriticalSection criticalSection;
@@ -25,8 +25,7 @@ public class BrokenLamportBakeryTest {
         this.criticalSection = new SimpleCriticalSection(delay);
     }
 
-    @Test
-    public void test() throws InterruptedException {
+    public void simpleTest() throws InterruptedException {
         initialize(2, 100);
         List<Thread> threads = createThreads();
         threads.forEach(Thread::start);
@@ -37,20 +36,15 @@ public class BrokenLamportBakeryTest {
     }
 
     @Test
-    public void testWithVmlens() {
-        try(AllInterleavings allInterleavings = buildAllInterleavings()) {
+    public void deterministicTest() {
+        try(AllInterleavings allInterleavings = new AllInterleavings("bakery.deterministic.test")) {
             while (allInterleavings.hasNext())
-                test();
+                simpleTest();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    private AllInterleavings buildAllInterleavings() {
-        return AllInterleavings.builder("critical.section.test")
-                .maximumRuns(10000)
-                .build();
-    }
 
     private List<Thread> createThreads() {
         return IntStream.range(0, sharedVariables.getNumberOfThreads())
