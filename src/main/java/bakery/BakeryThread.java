@@ -1,10 +1,15 @@
 package bakery;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import utils.LoggerUtil;
 import utils.CriticalSection;
 
 import java.util.concurrent.atomic.AtomicIntegerArray;
 
 public class BakeryThread implements Runnable {
+
+    private static final Logger logger = LogManager.getLogger(BakeryThread.class);
 
     private final int id;
     private final AtomicIntegerArray ticketMachine;
@@ -19,7 +24,8 @@ public class BakeryThread implements Runnable {
     }
 
     public void lock() {
-        enteringArray.set(id, 1);
+        // Buggy line, the value set should be 1
+        enteringArray.set(id, 0);
         ticketMachine.set(id, nextTicket());
         enteringArray.set(id, 0);
         waitInLine();
@@ -60,6 +66,7 @@ public class BakeryThread implements Runnable {
     @Override
     public void run() {
         lock();
+        LoggerUtil.logEnteringCriticalSection(logger, ticketMachine);
         criticalSection.enter();
         unlock();
     }

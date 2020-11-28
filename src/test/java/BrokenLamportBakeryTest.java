@@ -6,10 +6,10 @@ import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 import utils.CriticalSection;
+import utils.LoggerUtil;
 import utils.SimpleCriticalSection;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicIntegerArray;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -27,21 +27,13 @@ public class BrokenLamportBakeryTest {
 
     @Test
     public void test() throws InterruptedException {
-        initialize(3, 100);
+        initialize(2, 100);
         List<Thread> threads = createThreads();
         threads.forEach(Thread::start);
         for (Thread thread : threads)
             thread.join();
-        logger.info(getTicketMachineString());
+        LoggerUtil.logTestFinished(logger, criticalSection);
         Assert.assertFalse(criticalSection.isBreached());
-    }
-
-    private String getTicketMachineString() {
-        AtomicIntegerArray ticketMachine = sharedVariables.getTicketMachine();
-        return IntStream.range(0, ticketMachine.length())
-                .mapToObj(ticketMachine::get)
-                .map(String::valueOf)
-                .collect(Collectors.joining(", "));
     }
 
     @Test
