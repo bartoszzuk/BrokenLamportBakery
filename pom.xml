@@ -18,13 +18,7 @@
         <dependency>
             <groupId>com.vmlens</groupId>
             <artifactId>api</artifactId>
-            <version>1.1.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.googlecode.multithreadedtc</groupId>
-            <artifactId>multithreadedtc</artifactId>
-            <version>1.01</version>
-            <scope>test</scope>
+            <version>1.1.4</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -50,7 +44,7 @@
             <plugin>
                 <groupId>com.vmlens</groupId>
                 <artifactId>interleave</artifactId>
-                <version>1.1.2</version>
+                <version>1.1.4</version>
                 <executions>
                     <execution>
                         <goals>
