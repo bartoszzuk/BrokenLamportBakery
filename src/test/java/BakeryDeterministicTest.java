@@ -20,13 +20,13 @@ public class BakeryDeterministicTest {
     private SharedVariables sharedVariables;
     private CriticalSection criticalSection;
 
-    private void initialize(int numberOfThreads, long delay) {
-        this.sharedVariables = new SharedVariables(numberOfThreads);
-        this.criticalSection = new SimpleCriticalSection(delay);
+    private void initialize() {
+        this.sharedVariables = new SharedVariables(3);
+        this.criticalSection = new SimpleCriticalSection(100);
     }
 
     public void simpleTest() throws InterruptedException {
-        initialize(2, 100);
+        initialize();
         List<Thread> threads = createThreads();
         threads.forEach(Thread::start);
         for (Thread thread : threads)
@@ -37,7 +37,7 @@ public class BakeryDeterministicTest {
 
     @Test
     public void deterministicTest() {
-        try(AllInterleavings allInterleavings = new AllInterleavings("bakery.deterministic.test")) {
+        try(AllInterleavings allInterleavings = buildAllInterleavings()) {
             while (allInterleavings.hasNext())
                 simpleTest();
         } catch (InterruptedException e) {
@@ -45,6 +45,12 @@ public class BakeryDeterministicTest {
         }
     }
 
+    private AllInterleavings buildAllInterleavings() {
+        return AllInterleavings.builder("bakery.deterministic.test")
+                .maximumRuns(4000)
+                .maximumSynchronizationActionsPerThread(4000)
+                .build();
+    }
 
     private List<Thread> createThreads() {
         return IntStream.range(0, sharedVariables.getNumberOfThreads())

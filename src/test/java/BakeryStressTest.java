@@ -1,14 +1,11 @@
 import bakery.BakeryThread;
 import bakery.SharedVariables;
-import edu.umd.cs.mtc.MultithreadedTest;
-import edu.umd.cs.mtc.MultithreadedTestCase;
 import org.junit.Assert;
 import org.junit.jupiter.api.RepeatedTest;
 import utils.CriticalSection;
 import utils.SimpleCriticalSection;
 
 import java.util.List;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
